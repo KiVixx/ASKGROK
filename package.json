@@ -1,0 +1,28 @@
+{
+  "name": "askgrok",
+  "version": "1.0.0",
+  "description": "ASKGROK backend API that submits prompts to grok.com through a user-controlled browser session.",
+  "license": "MIT",
+  "author": "KeyVix",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KiVixx/ASKGROK.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KiVixx/ASKGROK/issues"
+  },
+  "homepage": "https://github.com/KiVixx/ASKGROK#readme",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "playwright": "^1.45.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
