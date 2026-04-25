@@ -4,6 +4,18 @@
 
 ASKGROK is a small backend API that opens a real browser, lets the user log in to [grok.com](https://grok.com), sends prompts through the chat box, waits for the answer, and returns the response text from the backend.
 
+## Runtime Requirements
+
+- Node.js 20+
+- npm 10+
+- Playwright Chromium
+- Network access to `https://grok.com`
+- A Grok account
+- A headed browser environment for the initial login
+- macOS, Linux, and Windows should work in principle, but the current development environment is macOS on Apple Silicon
+
+ASKGROK is not an official Grok API client. It uses Playwright to automate a real browser session. Headless or server-only environments may require extra browser display setup such as Xvfb.
+
 ## Setup
 
 ```bash
@@ -13,6 +25,15 @@ npm start
 ```
 
 By default the API listens on `http://localhost:3000`.
+
+## Environment Variables
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `PORT` | `3000` | API server port. |
+| `HEADLESS` | `false` | Run the browser headlessly. First login usually requires `false`. |
+| `GROK_PROFILE_DIR` | `.askgrok-profile` | Persistent browser profile directory. |
+| `GROK_URL` | `https://grok.com` | Grok web URL. |
 
 ## Login
 
