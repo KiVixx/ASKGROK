@@ -1,5 +1,7 @@
 # ASKGROK
 
+[中文说明](README.zh-CN.md)
+
 ASKGROK is a small backend API that opens a real browser, lets the user log in to [grok.com](https://grok.com), sends prompts through the chat box, waits for the answer, and returns the response text from the backend.
 
 ## Setup
