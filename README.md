@@ -84,6 +84,8 @@ Body:
 
 `timeoutMs` is optional. Requests are handled one at a time so Grok conversations do not overlap.
 
+If a Grok browser session is already open, ASKGROK asks in the current session instead of navigating back to a new chat. It only opens or navigates to Grok when no usable Grok page exists.
+
 ### `POST /sentiment/crypto`
 
 Runs the structured ASKGROK crypto sentiment prompt and returns normalized JSON for the ETL pipeline. Grok can use web/search context freely, including X/Twitter, news, market commentary, forums, blogs, and price context.

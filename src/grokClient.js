@@ -21,6 +21,7 @@ export class GrokClient {
     this.headless = headless;
     this.profileDir = path.resolve(projectRoot, profileDir);
     this.url = url;
+    this.urlOrigin = new URL(url).origin;
     this.context = null;
     this.page = null;
     this.queue = Promise.resolve();
@@ -38,9 +39,8 @@ export class GrokClient {
 
   async ask(prompt, { timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
     return this.enqueue(async () => {
-      const page = await this.ensurePage();
+      const page = await this.ensureGrokSessionPage();
       await page.bringToFront();
-      await page.goto(this.url, { waitUntil: 'domcontentloaded' });
 
       await this.waitForChatInput(page, timeoutMs);
 
@@ -76,15 +76,66 @@ export class GrokClient {
       return this.page;
     }
 
+    if (this.context) {
+      const openPage = this.findOpenPage();
+      if (openPage) {
+        this.page = openPage;
+        this.page.setDefaultTimeout(30_000);
+        return this.page;
+      }
+    }
+
     this.context = await chromium.launchPersistentContext(this.profileDir, {
       headless: this.headless,
       viewport: { width: 1440, height: 1000 },
       args: ['--disable-blink-features=AutomationControlled']
     });
 
-    this.page = this.context.pages()[0] || await this.context.newPage();
+    this.page = this.findOpenPage() || await this.context.newPage();
     this.page.setDefaultTimeout(30_000);
     return this.page;
+  }
+
+  async ensureGrokSessionPage() {
+    const page = await this.ensurePage();
+
+    if (this.isGrokPage(page)) {
+      return page;
+    }
+
+    const grokPage = this.findGrokPage();
+    if (grokPage) {
+      this.page = grokPage;
+      this.page.setDefaultTimeout(30_000);
+      return this.page;
+    }
+
+    await page.goto(this.url, { waitUntil: 'domcontentloaded' });
+    return page;
+  }
+
+  findOpenPage() {
+    if (!this.context) {
+      return null;
+    }
+
+    return this.findGrokPage() || this.context.pages().find((page) => !page.isClosed()) || null;
+  }
+
+  findGrokPage() {
+    if (!this.context) {
+      return null;
+    }
+
+    return this.context.pages().find((page) => !page.isClosed() && this.isGrokPage(page)) || null;
+  }
+
+  isGrokPage(page) {
+    try {
+      return new URL(page.url()).origin === this.urlOrigin;
+    } catch {
+      return false;
+    }
   }
 
   async waitForChatInput(page, timeoutMs) {

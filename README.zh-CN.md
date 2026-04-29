@@ -167,6 +167,8 @@ curl -X POST http://localhost:3000/sentiment/crypto \
 }
 ```
 
+如果 Grok 浏览器实例已经在运行，ASKGROK 会直接沿用当前 session 继续提问，不会主动跳回新对话。只有在没有可用 Grok 页面时，才会打开或导航到 Grok。
+
 ### `POST /sentiment/crypto`
 
 执行加密市场情绪分析，返回结构化 JSON。
