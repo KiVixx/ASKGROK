@@ -53,6 +53,7 @@ export class GrokClient {
         throw new GrokAutomationError('Grok response was empty or could not be read.', 502);
       }
 
+      await this.focusChatInput(page);
       return response;
     });
   }
@@ -392,6 +393,20 @@ export class GrokClient {
 
       return editable.value || editable.innerText || editable.textContent || '';
     });
+  }
+
+  async focusChatInput(page) {
+    try {
+      const input = await this.findInputHandle(page);
+      if (!input) {
+        return;
+      }
+
+      await input.scrollIntoViewIfNeeded();
+      await input.click();
+    } catch {
+      // Focusing the browser UI is best-effort and should not fail the API response.
+    }
   }
 }
 
